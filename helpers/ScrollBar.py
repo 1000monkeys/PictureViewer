@@ -3,9 +3,9 @@ import pygame
 from helpers.UIElement import UIElement
 
 class ScrollBar(UIElement):
-    def __init__(self, screen, super_screen) -> None:
+    def __init__(self, screen, gallery_screen) -> None:
         self.screen = screen
-        self.super_screen = super_screen
+        self.gallery_screen = gallery_screen
 
         self.screen_size = (self.screen.get_width(), self.screen.get_height())
         
@@ -14,11 +14,18 @@ class ScrollBar(UIElement):
         
         self.size_rect = pygame.Rect(0, 0, 0, 0)
 
-        self.button_rect = pygame.Rect(width - 25, 0, 25, 50)
+        self.button_rect = pygame.Rect(width - 25, 2, 25, 50)
         self.bar_rect = pygame.Rect(width - 25, 0, 25, height)
 
         self.percentage_scrolled = 0
         self.dragging = False
+
+    def get_offset(self):
+        percentage_scrolled = self.get_percentage_scrolled()
+        size = self.get_size()
+        #print(size)
+        offset_height = ((size.height + size.y) / 100 * percentage_scrolled) - (self.screen.get_height() / 100 * percentage_scrolled)
+        return offset_height
 
     def draw(self) -> None:
         width = self.screen.get_width()
@@ -51,23 +58,27 @@ class ScrollBar(UIElement):
                     self.button_rect.y = event.pos[1] - 25
                 elif not self.button_rect.collidepoint(event.pos):
                     self.dragging = False
-                
                 if self.dragging:
                     self.button_rect.y = event.pos[1] - 25
 
-        percentage_scrolled = self.button_rect.y / ((self.screen.get_height() - 50) / 100)
+        percentage_scrolled = (self.button_rect.y - 2) / ((self.screen.get_height() - 54) / 100)
         if percentage_scrolled > 100:
             percentage_scrolled = 100
         elif percentage_scrolled < 0:
             percentage_scrolled = 0
         self.percentage_scrolled = percentage_scrolled
-        #print(self.percentage_scrolled)
+
+        if self.button_rect.y < 2:
+            self.button_rect.y = 2
+        elif self.button_rect.y > self.screen.get_height() - 52:
+            self.button_rect.y = self.screen.get_height() - 52
+        print(self.percentage_scrolled)
 
     def get_size(self):
         return self.size_rect
 
     def calculate_size(self):
-        items = self.super_screen.get_items()
+        items = self.gallery_screen.get_items()
         
         size_dict = dict()
         size_dict[0] = 0
