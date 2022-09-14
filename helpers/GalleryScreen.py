@@ -51,7 +51,7 @@ class GalleryScreen(UIElement):
         offset = self.scrollbar.get_offset();
         self.amount_width = math.floor(self.screen_size[0] / 240)
         for column in range(0, self.amount_width):
-            for row in range(0, int(len(self.images) / self.amount_width)):
+            for row in range(0, math.ceil(len(self.images) / self.amount_width)):
                 if len(self.images) > column + row * self.amount_width:
                     #print("id: " + str(column + (row * self.amount_width)) + " Width: " + str(column) + " Height: " + str(row))
                     #print(images[column + row * self.amount_width].get_rect())
