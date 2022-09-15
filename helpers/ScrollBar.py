@@ -72,7 +72,7 @@ class ScrollBar(UIElement):
             self.button_rect.y = 2
         elif self.button_rect.y > self.screen.get_height() - 52:
             self.button_rect.y = self.screen.get_height() - 52
-        print(self.percentage_scrolled)
+        #print(self.percentage_scrolled)
 
     def get_size(self):
         return self.size_rect

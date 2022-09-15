@@ -16,6 +16,8 @@ class GalleryScreen(UIElement):
 
     def handle_events(self, events) -> None:
         self.scrollbar.handle_events(events)
+        for image in self.images:
+            image.handle_events(events)
 
     def get_rect(self) -> pygame.Rect:
         return super().get_rect()
@@ -56,13 +58,18 @@ class GalleryScreen(UIElement):
                     #print("id: " + str(column + (row * self.amount_width)) + " Width: " + str(column) + " Height: " + str(row))
                     #print(images[column + row * self.amount_width].get_rect())
                     pos = (column * 240, row * 240)
+                    #print(pos)
                     self.images[column + row * self.amount_width].set_pos(pos)
                     self.images[column + row * self.amount_width].set_offset(offset)
 
+        count = 0
         events = pygame.event.get()
         for image in self.images:
             rect = image.get_rect()
+            #print("Rectx" + str(rect.x + offset) + " out " + str(self.screen_size[0] + offset))
             if rect.x < self.screen_size[0] + offset and rect.x + rect.height > -1 and rect.y + rect.width > -1 and rect.y < self.screen_size[1] + offset:
+                #print("Drawing: " + str(count))
+                count = count + 1
                 image.handle_events(events)
                 image.draw()
 

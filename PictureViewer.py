@@ -3,6 +3,7 @@ from genericpath import isfile
 from ntpath import join
 from os import listdir
 import sys
+from turtle import Screen
 import pygame
 from helpers.ImageClass import ImageClass
 
@@ -14,21 +15,38 @@ class Main():
         pygame.init()
         self.super = super()
 
-        self.screen_width = 745 # 1024
+        self.fade_out = False
+        self.fade_in = True
+        self.alpha = 255
+
+        self.screen_width = 1024 # 1024
         self.screen_height = 768
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
         pygame.display.set_caption("Picture Viewer")
 
+    def change_to_picture_view(self, image_class):
+        self.image_class = image_class
+        self.alpha = 0
+        self.screen_list[1].set_picture(self.image_class)
+        self.fade_in = False
+        self.fade_out = True
+
     def run(self):
         self.gallery_screen = GalleryScreen(self.screen, screen_size=(self.screen_width, self.screen_height))
-        self.picture_screen = PictureScreen()
+        self.picture_screen = PictureScreen(self.screen)
+
+        self.screen_list = list()
+        self.screen_list.append(self.gallery_screen)
+        self.screen_list.append(self.picture_screen)
+
+        self.screen_id = 0
 
         mypath = "images"
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
         for file in onlyfiles:
-            self.gallery_screen.add_item(ImageClass(self.screen, file))
+            self.gallery_screen.add_item(ImageClass(self.screen, file, self))
 
         '''
         #Landscape
@@ -64,9 +82,33 @@ class Main():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            self.gallery_screen.handle_events(events)
-            self.gallery_screen.draw()
+            self.screen_list[self.screen_id].handle_events(events)
+            self.screen_list[self.screen_id].draw()
 
+            if self.fade_out:
+                self.alpha = self.alpha + 18
+                if self.alpha > 255:
+                    self.alpha = 255
+
+                    self.fade_out = False
+                    self.fade_in = True
+
+                    self.screen_list[1].set_picture(self.image_class)
+                    self.screen_id = 1
+                s = pygame.Surface((1024, 768))
+                s.set_alpha(self.alpha)
+                s.fill((0, 0, 0))
+                self.screen.blit(s, (0,0))
+            if self.fade_in:
+                self.alpha = self.alpha - 18
+                if self.alpha < 0:
+                    self.alpha = 0
+                    self.fade_out = False
+                    self.fade_in = False
+                s = pygame.Surface((1024, 768))
+                s.set_alpha(self.alpha)
+                s.fill((0, 0, 0))
+                self.screen.blit(s, (0,0))
             pygame.display.flip()
 
 
