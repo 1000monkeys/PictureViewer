@@ -15,6 +15,7 @@ class Main():
         pygame.init()
         self.super = super()
 
+        self.next_screen = 0
         self.fade_out = False
         self.fade_in = True
         self.alpha = 255
@@ -29,12 +30,14 @@ class Main():
         self.image_class = image_class
         self.alpha = 0
         self.screen_list[1].set_picture(self.image_class)
+        
+        self.next_screen = 1
         self.fade_in = False
         self.fade_out = True
 
     def run(self):
         self.gallery_screen = GalleryScreen(self.screen, screen_size=(self.screen_width, self.screen_height))
-        self.picture_screen = PictureScreen(self.screen)
+        self.picture_screen = PictureScreen(self.screen, self)
 
         self.screen_list = list()
         self.screen_list.append(self.gallery_screen)
@@ -86,7 +89,7 @@ class Main():
             self.screen_list[self.screen_id].draw()
 
             if self.fade_out:
-                self.alpha = self.alpha + 18
+                self.alpha = self.alpha + 27
                 if self.alpha > 255:
                     self.alpha = 255
 
@@ -94,13 +97,13 @@ class Main():
                     self.fade_in = True
 
                     self.screen_list[1].set_picture(self.image_class)
-                    self.screen_id = 1
+                    self.screen_id = self.next_screen
                 s = pygame.Surface((1024, 768))
                 s.set_alpha(self.alpha)
                 s.fill((0, 0, 0))
                 self.screen.blit(s, (0,0))
             if self.fade_in:
-                self.alpha = self.alpha - 18
+                self.alpha = self.alpha - 27
                 if self.alpha < 0:
                     self.alpha = 0
                     self.fade_out = False

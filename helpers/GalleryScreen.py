@@ -1,8 +1,8 @@
 import math
-
+import gc
 import pygame
-from helpers.ImageClass import ImageClass
 
+from helpers.ImageClass import ImageClass
 from helpers.ScrollBar import ScrollBar
 from helpers.UIElement import UIElement
 
@@ -13,6 +13,7 @@ class GalleryScreen(UIElement):
 
         self.scrollbar = ScrollBar(self.screen, self)
         self.images = list()
+        self.del_count = 0
 
     def handle_events(self, events) -> None:
         self.scrollbar.handle_events(events)
@@ -47,8 +48,7 @@ class GalleryScreen(UIElement):
     def draw(self) -> None:
         """Empty draw needed because all screens need this method
         """
-        if not hasattr(self, 'items'):
-            self.items = list()
+        gc.collect()
 
         offset = self.scrollbar.get_offset();
         self.amount_width = math.floor(self.screen_size[0] / 240)
@@ -67,11 +67,17 @@ class GalleryScreen(UIElement):
         for image in self.images:
             rect = image.get_rect()
             #print("Rectx" + str(rect.x + offset) + " out " + str(self.screen_size[0] + offset))
-            if rect.x < self.screen_size[0] + offset and rect.x + rect.height > -1 and rect.y + rect.width > -1 and rect.y < self.screen_size[1] + offset:
+            if rect.x < self.screen_size[0] + offset and rect.x + rect.height > -1 and rect.y + rect.width > offset - 240 and rect.y < self.screen_size[1] + offset:
                 #print("Drawing: " + str(count))
                 count = count + 1
                 image.handle_events(events)
                 image.draw()
+            else:
+                if hasattr(image, "images"):
+                    print("deleting: " + str(self.del_count) + "!")
+                    del image.images
+                    gc.collect()
+                    self.del_count = self.del_count + 1
 
         self.scrollbar.calculate_size()
         self.scrollbar.draw()
