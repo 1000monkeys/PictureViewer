@@ -83,8 +83,8 @@ class ScrollBar(UIElement):
         size_dict = dict()
         size_dict[0] = 0
         size_dict[1] = 0
-        size_dict[2] = 0
-        size_dict[3] = 0
+        size_dict[2] = 240
+        size_dict[3] = 240
 
         for item in items:
             if item.get_rect()[0] > size_dict[0]:
@@ -92,10 +92,10 @@ class ScrollBar(UIElement):
             if item.get_rect()[1] > size_dict[1]:
                 size_dict[1] = item.get_rect()[1]
 
-            if item.get_rect()[2] > size_dict[2]:
-                size_dict[2] = item.get_rect()[2]
-            if item.get_rect()[3] > size_dict[3]:
-                size_dict[3] = item.get_rect()[3]
+            # if item.get_rect()[2] > size_dict[2]:
+            #     size_dict[2] = item.get_rect()[2]
+            # if item.get_rect()[3] > size_dict[3]:
+            #     size_dict[3] = item.get_rect()[3]
         
         #print("canvas size: " + str(size_dict))
         self.size_rect = pygame.Rect(size_dict[0], size_dict[1], size_dict[2], size_dict[3])

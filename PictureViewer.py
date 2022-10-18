@@ -2,6 +2,7 @@
 from genericpath import isfile
 from ntpath import join
 from os import listdir
+import os
 import sys
 from turtle import Screen
 import pygame
@@ -46,34 +47,13 @@ class Main():
         self.screen_id = 0
 
         mypath = "images"
+        if (not os.path.isdir(mypath)):
+            os.mkdir(mypath)
+            
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
         for file in onlyfiles:
             self.gallery_screen.add_item(ImageClass(self.screen, file, self))
-
-        '''
-        #Landscape
-        super().add_item(ImageClass(self.screen, "Landscape_0.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_1.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_2.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_3.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_4.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_5.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_6.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_7.jpg"))
-        super().add_item(ImageClass(self.screen, "Landscape_8.jpg"))
-        
-        #Portrait
-        super().add_item(ImageClass(self.screen, "Portrait_0.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_1.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_2.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_3.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_4.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_5.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_6.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_7.jpg"))
-        super().add_item(ImageClass(self.screen, "Portrait_8.jpg"))
-        '''
 
         while True:
             pygame.time.Clock().tick(30)
